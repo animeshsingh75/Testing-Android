@@ -1,37 +1,36 @@
 package com.techyourchance.unittestingfundamentals.example2;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StringReverserTest {
 
     StringReverser SUT;
 
     @Before
-    public void setup() throws Exception {
-        SUT = new StringReverser();
+    public void setUp() throws Exception {
+        SUT=new StringReverser();
     }
 
     @Test
-    public void reverse_emptyString_emptyStringReturned() throws Exception {
-        String result = SUT.reverse("");
-        assertThat(result, is(""));
+    public void reverse_emptyString_emptyReversedString() throws Exception{
+        String result=SUT.reverse("");
+        assertThat(result,is(""));
     }
 
     @Test
-    public void reverse_singleCharacter_sameStringReturned() throws Exception {
-        String result = SUT.reverse("a");
-        assertThat(result, is("a"));
+    public void reverse_singleCharacterString_sameStringReturned() throws Exception{
+        String result=SUT.reverse("a");
+        assertThat(result,is("a"));
     }
 
     @Test
-    public void reverse_longString_reversedStringReturned() throws Exception {
-        String result = SUT.reverse("Vasiliy Zukanov");
-        assertThat(result, is("vonakuZ yilisaV"));
+    public void reverse_longString_reverseStringReturned() throws Exception{
+        String str="Animesh Singh";
+        String result=SUT.reverse(str);
+        assertThat(result,is("hgniS hseminA"));
     }
 }

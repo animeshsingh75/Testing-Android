@@ -1,6 +1,7 @@
 package com.techyourchance.testdoublesfundamentals.example6;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,14 +19,16 @@ public class FitnessTrackerTest {
     }
 
     @Test
-    public void step_totalIncremented() throws Exception {
+    public void step_totalIncremented() {
         SUT.step();
-        assertThat(SUT.getTotalSteps(), is(1));
+        int step = SUT.getTotalSteps();
+        MatcherAssert.assertThat(step, is(1));
     }
 
     @Test
-    public void runStep_totalIncrementedByCorrectRatio() throws Exception {
+    public void runStep_totalIncrementedByCorrectRatio() {
         SUT.runStep();
-        assertThat(SUT.getTotalSteps(), is(2));
+        int step = SUT.getTotalSteps();
+        MatcherAssert.assertThat(step, is(2));
     }
 }

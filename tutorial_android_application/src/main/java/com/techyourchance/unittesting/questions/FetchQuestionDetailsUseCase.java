@@ -12,6 +12,7 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
 
     public interface Listener {
         void onQuestionDetailsFetched(QuestionDetails questionDetails);
+
         void onQuestionDetailsFetchFailed();
     }
 
@@ -19,17 +20,15 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
 
     private final FetchQuestionDetailsEndpoint mFetchQuestionDetailsEndpoint;
     private final TimeProvider mTimeProvider;
-
     private final Map<String, QuestionDetailsCacheEntry> mQuestionDetailsCache = new HashMap<>();
 
-    public FetchQuestionDetailsUseCase(FetchQuestionDetailsEndpoint fetchQuestionDetailsEndpoint,
-                                       TimeProvider timeProvider) {
+    public FetchQuestionDetailsUseCase(FetchQuestionDetailsEndpoint fetchQuestionDetailsEndpoint, TimeProvider timeProvider) {
         mFetchQuestionDetailsEndpoint = fetchQuestionDetailsEndpoint;
         mTimeProvider = timeProvider;
     }
 
     public void fetchQuestionDetailsAndNotify(final String questionId) {
-        if (serveQuestionDetailsFromCacheIfValid(questionId)) {
+        if(serveQuestionDetailsFromCacheIfValid(questionId)){
             return;
         }
         mFetchQuestionDetailsEndpoint.fetchQuestionDetails(questionId, new FetchQuestionDetailsEndpoint.Listener() {
@@ -41,6 +40,7 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
                 );
                 mQuestionDetailsCache.put(questionId, cacheEntry);
                 notifySuccess(cacheEntry.mQuestionDetails);
+
             }
 
             @Override
@@ -49,7 +49,6 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
             }
         });
     }
-
     private boolean serveQuestionDetailsFromCacheIfValid(String questionId) {
         final QuestionDetailsCacheEntry cachedQuestionDetailsEntry = mQuestionDetailsCache.get(questionId);
         if (cachedQuestionDetailsEntry != null
@@ -61,14 +60,6 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
         }
     }
 
-    private QuestionDetails schemaToQuestionDetails(QuestionSchema questionSchema) {
-        return new QuestionDetails(
-                questionSchema.getId(),
-                questionSchema.getTitle(),
-                questionSchema.getBody()
-        );
-    }
-
     private void notifyFailure() {
         for (Listener listener : getListeners()) {
             listener.onQuestionDetailsFetchFailed();
@@ -77,10 +68,17 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
 
     private void notifySuccess(QuestionDetails questionDetails) {
         for (Listener listener : getListeners()) {
-            listener.onQuestionDetailsFetched(questionDetails);
+            listener.onQuestionDetailsFetched(new QuestionDetails(questionDetails.getId(), questionDetails.getTitle(), questionDetails.getBody()));
         }
     }
 
+    private QuestionDetails schemaToQuestionDetails(QuestionSchema questionSchema) {
+        return new QuestionDetails(
+                questionSchema.getId(),
+                questionSchema.getTitle(),
+                questionSchema.getBody()
+        );
+    }
     private static class QuestionDetailsCacheEntry {
         private final QuestionDetails mQuestionDetails;
         private final long mCachedTimestamp;
@@ -90,5 +88,4 @@ public class FetchQuestionDetailsUseCase extends BaseObservable<FetchQuestionDet
             mCachedTimestamp = cachedTimestamp;
         }
     }
-
 }

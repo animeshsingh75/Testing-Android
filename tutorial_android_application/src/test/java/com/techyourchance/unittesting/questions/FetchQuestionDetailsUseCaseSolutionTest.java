@@ -50,13 +50,12 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
         mListener1 = new ListenerTd();
         mListener2 = new ListenerTd();
         SUT = new FetchQuestionDetailsUseCase(mFetchQuestionDetailsEndpointMock, mTimeProviderMock);
-
         SUT.registerListener(mListener1);
         SUT.registerListener(mListener2);
     }
 
     @Test
-    public void fetchQuestionDetailsAndNotify_success_listenersNotifiedWithCorrectData() throws Exception {
+    public void fetchQuestionsDetailsAndNotify_success_listenersNotifiedWithCorrectData() throws Exception {
         // Arrange
         success();
         // Act
@@ -69,7 +68,7 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
     }
 
     @Test
-    public void fetchQuestionDetailsAndNotify_failure_listenersNotifiedOfFailure() throws Exception {
+    public void fetchQuestionsDetailsAndNotify_failure_listenersNotifiedOfFailure() throws Exception {
         // Arrange
         failure();
         // Act
@@ -80,7 +79,7 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
     }
 
     @Test
-    public void fetchQuestionDetailsAndNotify_secondTimeImmediatelyAfterSuccess_listenersNotifiedWithDataFromCache() throws Exception {
+    public void fetchQuestionDetailsAndNotify_secondTimeImmediatelyAfterSuccess_listenersNotifiedWithDataFromCache() {
         // Arrange
         success();
         // Act
@@ -181,31 +180,25 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
         assertThat(mEndpointCallsCount, is(2));
     }
 
-
     // region helper methods -----------------------------------------------------------------------
 
     private void success() {
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                mEndpointCallsCount++;
-
-                Object[] args = invocation.getArguments();
-                String questionId = (String)args[0];
-                FetchQuestionDetailsEndpoint.Listener listener =
-                        (FetchQuestionDetailsEndpoint.Listener) args[1];
-
-                QuestionSchema response;
-                if (questionId.equals(QUESTION_ID_1)) {
-                    response = new QuestionSchema(QUESTION_DETAILS_1.getTitle(), QUESTION_DETAILS_1.getId(), QUESTION_DETAILS_1.getBody());
-                } else if (questionId.equals(QUESTION_ID_2)) {
-                    response = new QuestionSchema(QUESTION_DETAILS_2.getTitle(), QUESTION_DETAILS_2.getId(), QUESTION_DETAILS_2.getBody());
-                } else {
-                    throw new RuntimeException("unhandled question id: " + questionId);
-                }
-                listener.onQuestionDetailsFetched(response);
-                return null;
+        doAnswer(invocation -> {
+            mEndpointCallsCount++;
+            Object[] args = invocation.getArguments();
+            String questionId = (String)args[0];
+            FetchQuestionDetailsEndpoint.Listener listener =
+                    (FetchQuestionDetailsEndpoint.Listener) args[1];
+            QuestionSchema response;
+            if (questionId.equals(QUESTION_ID_1)) {
+                response = new QuestionSchema(QUESTION_DETAILS_1.getTitle(), QUESTION_DETAILS_1.getId(), QUESTION_DETAILS_1.getBody());
+            } else if (questionId.equals(QUESTION_ID_2)) {
+                response = new QuestionSchema(QUESTION_DETAILS_2.getTitle(), QUESTION_DETAILS_2.getId(), QUESTION_DETAILS_2.getBody());
+            } else {
+                throw new RuntimeException("unhandled question id: " + questionId);
             }
+            listener.onQuestionDetailsFetched(response);
+            return null;
         }).when(mFetchQuestionDetailsEndpointMock).fetchQuestionDetails(
                 any(String.class),
                 any(FetchQuestionDetailsEndpoint.Listener.class)
@@ -213,18 +206,13 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
     }
 
     private void failure() {
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                mEndpointCallsCount++;
-
-                Object[] args = invocation.getArguments();
-                FetchQuestionDetailsEndpoint.Listener listener =
-                        (FetchQuestionDetailsEndpoint.Listener) args[1];
-
-                listener.onQuestionDetailsFetchFailed();
-                return null;
-            }
+        doAnswer(invocation -> {
+            mEndpointCallsCount++;
+            Object[] args = invocation.getArguments();
+            FetchQuestionDetailsEndpoint.Listener listener =
+                    (FetchQuestionDetailsEndpoint.Listener) args[1];
+            listener.onQuestionDetailsFetchFailed();
+            return null;
         }).when(mFetchQuestionDetailsEndpointMock).fetchQuestionDetails(
                 any(String.class),
                 any(FetchQuestionDetailsEndpoint.Listener.class)
@@ -258,7 +246,7 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
         }
 
         public void assertOneFailingCall() {
-            if (mCallCount != 1 || mSuccessCount > 0) {
+            if (mCallCount != 1 || mSuccessCount>0) {
                 throw new RuntimeException("one failing call assertion failed");
             }
         }
@@ -267,7 +255,6 @@ public class FetchQuestionDetailsUseCaseSolutionTest {
             return mData;
         }
     }
-    
     // endregion helper classes --------------------------------------------------------------------
 
 }

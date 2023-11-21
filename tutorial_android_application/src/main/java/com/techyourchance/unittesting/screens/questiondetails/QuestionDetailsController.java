@@ -5,7 +5,7 @@ import com.techyourchance.unittesting.questions.QuestionDetails;
 import com.techyourchance.unittesting.screens.common.screensnavigator.ScreensNavigator;
 import com.techyourchance.unittesting.screens.common.toastshelper.ToastsHelper;
 
-public class QuestionDetailsController implements QuestionDetailsViewMvc.Listener, FetchQuestionDetailsUseCase.Listener {
+public class QuestionDetailsController implements QuestionDetailsViewMvc.Listener, FetchQuestionDetailsUseCase.Listener{
 
     private final FetchQuestionDetailsUseCase mFetchQuestionDetailsUseCase;
     private final ScreensNavigator mScreensNavigator;
@@ -14,9 +14,7 @@ public class QuestionDetailsController implements QuestionDetailsViewMvc.Listene
     private String mQuestionId;
     private QuestionDetailsViewMvc mViewMvc;
 
-    public QuestionDetailsController(FetchQuestionDetailsUseCase fetchQuestionDetailsUseCase,
-                                     ScreensNavigator screensNavigator,
-                                     ToastsHelper toastsHelper) {
+    public QuestionDetailsController(FetchQuestionDetailsUseCase fetchQuestionDetailsUseCase, ScreensNavigator screensNavigator, ToastsHelper toastsHelper) {
         mFetchQuestionDetailsUseCase = fetchQuestionDetailsUseCase;
         mScreensNavigator = screensNavigator;
         mToastsHelper = toastsHelper;
@@ -30,19 +28,17 @@ public class QuestionDetailsController implements QuestionDetailsViewMvc.Listene
         mViewMvc = viewMvc;
     }
 
-    public void onStart() {
+    public void onStart(){
         mViewMvc.registerListener(this);
         mFetchQuestionDetailsUseCase.registerListener(this);
-
         mViewMvc.showProgressIndication();
         mFetchQuestionDetailsUseCase.fetchQuestionDetailsAndNotify(mQuestionId);
     }
 
-    public void onStop() {
+    public void onStop(){
         mViewMvc.unregisterListener(this);
         mFetchQuestionDetailsUseCase.unregisterListener(this);
     }
-
     @Override
     public void onQuestionDetailsFetched(QuestionDetails questionDetails) {
         mViewMvc.bindQuestion(questionDetails);
@@ -59,5 +55,4 @@ public class QuestionDetailsController implements QuestionDetailsViewMvc.Listene
     public void onNavigateUpClicked() {
         mScreensNavigator.navigateUp();
     }
-
 }

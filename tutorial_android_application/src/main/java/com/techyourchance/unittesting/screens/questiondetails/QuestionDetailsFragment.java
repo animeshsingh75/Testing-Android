@@ -1,8 +1,10 @@
 package com.techyourchance.unittesting.screens.questiondetails;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +38,11 @@ public class QuestionDetailsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        QuestionDetailsViewMvc mViewMvc = getCompositionRoot().getViewMvcFactory().getQuestionDetailsViewMvc(container);
+        QuestionDetailsViewMvc questionDetailsViewMvc = getCompositionRoot().getViewMvcFactory().getQuestionDetailsViewMvc(container);
 
-        mQuestionDetailsController.bindView(mViewMvc);
+        mQuestionDetailsController.bindView(questionDetailsViewMvc);
         mQuestionDetailsController.bindQuestionId(getArguments().getString(ARG_QUESTION_ID));
-
-        return mViewMvc.getRootView();
+        return questionDetailsViewMvc.getRootView();
     }
 
     @Override
@@ -59,5 +60,4 @@ public class QuestionDetailsFragment extends BaseFragment {
     private String getQuestionId() {
         return getArguments().getString(ARG_QUESTION_ID);
     }
-
 }

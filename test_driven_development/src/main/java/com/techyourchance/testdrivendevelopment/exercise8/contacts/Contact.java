@@ -1,5 +1,7 @@
 package com.techyourchance.testdrivendevelopment.exercise8.contacts;
 
+import java.util.Objects;
+
 public class Contact {
 
     private final String mId;

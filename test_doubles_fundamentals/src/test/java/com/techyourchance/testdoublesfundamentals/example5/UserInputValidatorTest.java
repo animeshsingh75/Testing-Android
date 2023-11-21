@@ -1,6 +1,7 @@
 package com.techyourchance.testdoublesfundamentals.example5;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +14,8 @@ public class UserInputValidatorTest {
     UserInputValidator SUT;
 
     @Before
-    public void setup() throws Exception {
-        SUT = new UserInputValidator();
+    public void setUp() throws Exception {
+        SUT=new UserInputValidator();
     }
 
     @Test
@@ -28,16 +29,21 @@ public class UserInputValidatorTest {
         boolean result = SUT.isValidFullName("");
         assertThat(result, is(false));
     }
-
     @Test
-    public void isValidUsername_validUsername_trueReturned() throws Exception {
-        boolean result = SUT.isValidUsername("validUsername");
-        assertThat(result, is(true));
+    public void isValidFullName_empty_falseReturned() {
+        boolean result=SUT.isValidFullName("");
+        MatcherAssert.assertThat(result, is(false));
     }
 
     @Test
-    public void isValidUsername_invalidUsername_falseReturned() throws Exception {
-        boolean result = SUT.isValidUsername("");
-        assertThat(result, is(false));
+    public void isValidUserName_validUserName_trueReturned() {
+        boolean result=SUT.isValidUsername("Animesh Singh");
+        MatcherAssert.assertThat(result, is(true));
+    }
+
+    @Test
+    public void isValidUserName_empty_falseReturned() {
+        boolean result=SUT.isValidUsername("");
+        MatcherAssert.assertThat(result, is(false));
     }
 }
